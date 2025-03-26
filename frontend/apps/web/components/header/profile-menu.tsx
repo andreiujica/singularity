@@ -24,7 +24,7 @@ export function ProfileMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Avatar className="inline-flex items-center justify-center h-8 w-8 cursor-pointer bg-lime-400 hover:bg-lime-500 transition-colors">
-          <AvatarFallback className="text-background text-sm">AU</AvatarFallback>
+          <AvatarFallback className="text-background text-sm bg-lime-400 hover:bg-lime-500 transition-colors">AU</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
