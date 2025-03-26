@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.routing import APIRoute, APIWebSocketRoute
 
-from src.routes.health import router as health_router
-from src.routes.v1.endpoints import router as v1_router
+from src.api.health import router as health_router
+from src.api.v1.chat import router as v1_router
 from src.settings import settings
 from src.utils.app_resources import app_resources_lifespan, logger
 
