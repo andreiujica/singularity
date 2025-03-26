@@ -1,11 +1,12 @@
 import { AppSidebar } from "@/components/sidebar"
 import { Header } from "@/components/header"
-import { ChatArea } from "@/components/chat-area"
+import { ChatArea } from "@/components/chat/textarea"
+
 import {
   SidebarInset,
   SidebarProvider,
 } from "@workspace/ui/components/sidebar"
-import { ChatBubble } from "@/components/chat-bubble"
+import { ChatBubble } from "@/components/chat/bubble"
 
 export default function Page() {
   return (
