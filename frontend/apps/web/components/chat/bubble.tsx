@@ -18,7 +18,7 @@ export function ChatBubble({ content, isUser = true, className }: ChatBubbleProp
             "rounded-xl overflow-hidden p-2 sm:p-3 md:p-4",
             isUser 
               ? "bg-lime-50 dark:bg-lime-950/50 border-lime-200 dark:border-lime-800/30 border max-w-[80%] sm:max-w-[70%] md:max-w-lg ml-auto" 
-              : "w-full bg-sidebar",
+              : "w-full",
             className
           )}
         >
