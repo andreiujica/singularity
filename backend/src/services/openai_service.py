@@ -24,7 +24,7 @@ class OpenAIService:
     async def generate_chat_completion(
         self,
         messages: List[Dict[str, str]],
-        model: str = "gpt-3.5-turbo",
+        model: str = "gpt-4o-mini",
         temperature: float = 0.7,
         max_tokens: Optional[int] = None,
         stream: bool = True,
