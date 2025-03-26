@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     API_VERSION: str
     API_DESCRIPTION: str
     LOGGING_LEVEL: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+    OPENAI_API_KEY: str
+
+    model_config = SettingsConfigDict(env_file=".env")
 
 
 settings = Settings()
