@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@workspace/ui/components/button";
-import { ImageIcon, SendIcon } from "lucide-react";
+import { ArrowUp, ImageIcon, SendIcon } from "lucide-react";
 import { cn } from "@workspace/ui/lib/utils";
 
 export function ChatArea() {
@@ -20,7 +20,7 @@ export function ChatArea() {
 
   return (
     <div className="w-full mt-4 sm:mt-8 mb-auto px-2 sm:px-4">
-      <div className="bg-sidebar rounded-xl overflow-hidden w-full max-w-2xl mx-auto">        
+      <div className="bg-sidebar rounded-xl overflow-hidden w-full max-w-3xl mx-auto">        
         {/* Input area */}
         <div className="p-3 sm:p-4">
           <div className="flex flex-col gap-2 sm:gap-3">
@@ -57,7 +57,7 @@ export function ChatArea() {
                 size="sm"
                 className="bg-lime-400 hover:bg-lime-500 text-white dark:text-black border-none rounded-full h-8 w-8 p-0"
               >
-                <SendIcon className="size-4" />
+                <ArrowUp className="size-4" />
               </Button>
             </div>
           </div>

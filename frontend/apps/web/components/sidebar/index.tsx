@@ -1,6 +1,6 @@
 import * as React from "react"
 
-import { SearchForm } from "@/components/search-form"
+import { SearchForm } from "@/components/sidebar/search-form"
 import {
   Sidebar,
   SidebarContent,
@@ -17,130 +17,55 @@ import { SidebarLogo } from "@/components/sidebar/logo"
 
 // This is sample data.
 const data = {
-  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
   navMain: [
     {
-      title: "Getting Started",
+      title: "Today",
       url: "#",
       items: [
         {
-          title: "Installation",
-          url: "#",
-        },
-        {
-          title: "Project Structure",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Building Your Application",
-      url: "#",
-      items: [
-        {
-          title: "Routing",
-          url: "#",
-        },
-        {
-          title: "Data Fetching",
+          title: "I have a new idea for a product",
           url: "#",
           isActive: true,
         },
         {
-          title: "Rendering",
-          url: "#",
-        },
-        {
-          title: "Caching",
-          url: "#",
-        },
-        {
-          title: "Styling",
-          url: "#",
-        },
-        {
-          title: "Optimizing",
-          url: "#",
-        },
-        {
-          title: "Configuring",
-          url: "#",
-        },
-        {
-          title: "Testing",
-          url: "#",
-        },
-        {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
+          title: "I want to build a new website",
           url: "#",
         },
       ],
     },
     {
-      title: "API Reference",
+      title: "Yesterday",
       url: "#",
       items: [
         {
-          title: "Components",
+          title: "I have a question about the product and it is really long and I need to ask it",
           url: "#",
         },
         {
-          title: "File Conventions",
+          title: "Help me write a blog post",
           url: "#",
         },
         {
-          title: "Functions",
+          title: "Hi, how are you?",
           url: "#",
         },
         {
-          title: "next.config.js Options",
-          url: "#",
-        },
-        {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
+          title: "Hey, what is the weather in Tokyo in the next 7 days?",
           url: "#",
         },
       ],
     },
     {
-      title: "Architecture",
+      title: "Last week",
       url: "#",
       items: [
         {
-          title: "Accessibility",
-          url: "#",
+            title: "My name is John Doe and I want to build a new website",
+            url: "#",
         },
         {
-          title: "Fast Refresh",
-          url: "#",
-        },
-        {
-          title: "Next.js Compiler",
-          url: "#",
-        },
-        {
-          title: "Supported Browsers",
-          url: "#",
-        },
-        {
-          title: "Turbopack",
-          url: "#",
+            title: "I have a friend who is a software engineer and I want to build a new website",
+            url: "#",
         },
       ],
     },
