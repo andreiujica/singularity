@@ -81,44 +81,63 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         return;
       }
 
+      // For debugging
+      console.debug("Processing message:", data.content);
+
       setConversations(prev => {
-        return prev.map(conversation => {
-          if (conversation.id !== currentConversationId) return conversation;
+        // Get current conversation
+        const updatedConversations = [...prev];
+        const conversationIndex = updatedConversations.findIndex(
+          c => c.id === currentConversationId
+        );
+        
+        if (conversationIndex === -1) return prev;
+        
+        const conversation = updatedConversations[conversationIndex];
+        
+        // Ensure we have a valid conversation with messages
+        if (!conversation || !conversation.messages) return prev;
+        
+        const messages = [...conversation.messages];
+        
+        // If finished signal, just mark complete
+        if (data.finished) {
+          // Mark request as complete
+          activeRequestId.current = null;
+          setIsLoading(false);
+          return updatedConversations;
+        }
+        
+        // Check if we already have an assistant message for this response
+        const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
+        
+        if (lastMessage && lastMessage.role === 'assistant') {
+          // Update existing message with new content
+          const updatedMessage = {
+            ...lastMessage,
+            content: lastMessage.content + data.content
+          };
           
-          const messages = [...conversation.messages];
-          const lastMessage = messages[messages.length - 1];
-          
-          // If the last message is from the assistant and for the current request,
-          // append the content, otherwise add a new message
-          if (lastMessage && lastMessage.role === 'assistant' && !data.finished) {
-            lastMessage.content += data.content;
-            return {
-              ...conversation,
-              messages,
-              updatedAt: new Date(),
-            };
-          } else if (data.finished) {
-            // Mark request as complete
-            activeRequestId.current = null;
-            setIsLoading(false);
-            return conversation;
-          } else {
-            // Add new assistant message
-            messages.push({
-              id: uuidv4(),
-              content: data.content,
-              role: 'assistant',
-              conversationId: conversation.id,
-              createdAt: new Date(),
-            });
-            
-            return {
-              ...conversation,
-              messages,
-              updatedAt: new Date(),
-            };
-          }
-        });
+          messages[messages.length - 1] = updatedMessage;
+        } else {
+          // Add new assistant message
+          messages.push({
+            id: uuidv4(),
+            content: data.content,
+            role: 'assistant',
+            conversationId: conversation.id,
+            createdAt: new Date(),
+          });
+        }
+        
+        // Update the conversation with new messages
+        updatedConversations[conversationIndex] = {
+          ...conversation,
+          messages,
+          updatedAt: new Date()
+        };
+        
+        return updatedConversations;
       });
     });
     
