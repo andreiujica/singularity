@@ -1,19 +1,22 @@
 "use client"
 
+import { useRef, useEffect } from "react"
 import { AppSidebar } from "@/components/sidebar"
 import { Header } from "@/components/header"
-import { ChatArea } from "@/components/chat/textarea"
-import { useEffect } from "react"
+import { ChatArea, ChatAreaHandle } from "@/components/chat/textarea"
 
 import {
   SidebarInset,
   SidebarProvider,
 } from "@workspace/ui/components/sidebar"
 import { ChatBubble } from "@/components/chat/bubble"
+import { WelcomeScreen } from "@/components/chat/welcome"
 import { useChatContext } from "@/hooks/useChatContext"
 
 export default function Page() {
   const { conversations, currentConversationId, createConversation } = useChatContext();
+  const chatAreaRef = useRef<ChatAreaHandle>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Get current conversation messages
   const currentConversation = currentConversationId 
@@ -27,30 +30,55 @@ export default function Page() {
     }
   }, [currentConversationId, conversations.length, createConversation]);
 
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [currentConversation?.messages]);
+
+  // Handle suggestion clicks
+  const handleSuggestionClick = (text: string) => {
+    if (chatAreaRef.current) {
+      chatAreaRef.current.setMessage(text);
+      
+      // Small delay to ensure the UI updates before sending
+      setTimeout(() => {
+        if (chatAreaRef.current) {
+          chatAreaRef.current.sendMessage();
+          // Scroll to bottom after sending
+          messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+    }
+  };
+
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="flex flex-col h-screen">
         <Header />
-        <div className="flex flex-1 flex-col items-center overflow-y-auto">
-          <div className="w-full flex flex-col justify-center">
-            {/* If we have a conversation, display its messages */}
+        <div className="flex flex-1 flex-col overflow-y-auto">
+          <div className="w-full flex flex-col flex-1">
+            {/* If we have conversation messages, display them */}
             {currentConversation?.messages?.length ? (
-              currentConversation.messages.map(message => (
-                <ChatBubble 
-                  key={message.id} 
-                  content={message.content} 
-                  isUser={message.role === 'user'} 
-                />
-              ))
+              <div className="flex-1 px-4 py-6 overflow-y-auto">
+                {currentConversation.messages.map(message => (
+                  <ChatBubble 
+                    key={message.id} 
+                    content={message.content} 
+                    isUser={message.role === 'user'} 
+                  />
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
             ) : (
-              // Default welcome message if no conversation exists
-              <ChatBubble 
-                content="Hello! How can I help you today?" 
-                isUser={false} 
-              />
+              // Welcome screen if no messages
+              <div className="flex-1 flex items-center justify-center">
+                <WelcomeScreen onSuggestionClick={handleSuggestionClick} />
+              </div>
             )}
-            <ChatArea />
+            
+            {/* Chat input area fixed at bottom */}
+            <ChatArea ref={chatAreaRef} />
           </div>
         </div>
       </SidebarInset>

@@ -1,15 +1,28 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, forwardRef, useImperativeHandle } from "react";
 import { Button } from "@workspace/ui/components/button";
 import { ArrowUp, ImageIcon, SendIcon, Loader2, AlertTriangle, RefreshCw } from "lucide-react";
 import { cn } from "@workspace/ui/lib/utils";
 import { useChatContext } from "@/hooks/useChatContext";
 
-export function ChatArea() {
+export type ChatAreaHandle = {
+  setMessage: (text: string) => void;
+  sendMessage: () => void;
+};
+
+export const ChatArea = forwardRef<ChatAreaHandle>((props, ref) => {
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const { sendMessage, isLoading, isConnected, connectionError, retryConnection } = useChatContext();
+  const { sendMessage: sendChatMessage, isLoading, isConnected, connectionError, retryConnection } = useChatContext();
+
+  // Expose methods to parent component
+  useImperativeHandle(ref, () => ({
+    setMessage: (text: string) => {
+      setMessage(text);
+    },
+    sendMessage: handleSendMessage
+  }));
 
   // Auto-resize textarea based on content
   useEffect(() => {
@@ -23,7 +36,7 @@ export function ChatArea() {
   const handleSendMessage = () => {
     if (!message.trim() || isLoading) return;
     
-    sendMessage(message);
+    sendChatMessage(message);
     setMessage("");
   };
 
@@ -35,8 +48,8 @@ export function ChatArea() {
   };
 
   return (
-    <div className="w-full mt-4 sm:mt-8 mb-auto px-2 sm:px-4">
-      <div className="bg-sidebar rounded-xl overflow-hidden w-full max-w-3xl mx-auto">
+    <div className="w-full px-2 sm:px-4 sticky bottom-0 py-4 bg-background/80 backdrop-blur-sm">
+      <div className="bg-sidebar rounded-xl overflow-hidden w-full max-w-3xl mx-auto shadow-lg">
         {/* Connection error message */}
         {connectionError && (
           <div className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800/30 border-t p-2 text-sm flex items-center justify-between">
@@ -119,4 +132,6 @@ export function ChatArea() {
       </div>
     </div>
   );
-} 
+})
+
+ChatArea.displayName = "ChatArea"; 
