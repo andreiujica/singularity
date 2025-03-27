@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import { useChatContext } from "@/hooks/useChatContext"
 import { SearchForm } from "@/components/sidebar/search-form"
 import {
@@ -27,66 +27,80 @@ type ConversationGroup = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { conversations, currentConversationId, switchConversation } = useChatContext()
-  
+  const [searchQuery, setSearchQuery] = useState("");
+
   // Group conversations by date
   const groupedConversations = useMemo(() => {
-    // Sort conversations by updatedAt (newest first)
-    const sortedConversations = [...conversations].sort((a, b) => 
-      new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-    )
+    // Filter conversations based on search query
+    const filteredConversations = searchQuery.trim() !== "" 
+      ? conversations.filter(conv => {
+          // Search in title
+          if (conv.title.toLowerCase().includes(searchQuery.toLowerCase())) {
+            return true;
+          }
+          
+          // Search in message content
+          return conv.messages.some(msg => 
+            msg.content.toLowerCase().includes(searchQuery.toLowerCase())
+          );
+        })
+      : conversations;
     
-    // Create groups
-    const todayGroup: Conversation[] = [];
-    const yesterdayGroup: Conversation[] = [];
-    const thisWeekGroup: Conversation[] = [];
-    const olderGroup: Conversation[] = [];
+    // Group filtered conversations
+    const today: Conversation[] = [];
+    const yesterday: Conversation[] = [];
+    const thisWeek: Conversation[] = [];
+    const thisMonth: Conversation[] = [];
+    const older: Conversation[] = [];
     
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
+    const now = new Date();
+    const todayDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterdayDate = new Date(todayDate);
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+    const thisWeekDate = new Date(todayDate);
+    thisWeekDate.setDate(thisWeekDate.getDate() - 7);
+    const thisMonthDate = new Date(todayDate);
+    thisMonthDate.setDate(thisMonthDate.getDate() - 30);
     
-    const yesterday = new Date(today)
-    yesterday.setDate(yesterday.getDate() - 1)
-    
-    const oneWeekAgo = new Date(today)
-    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
-    
-    // Sort conversations into groups
-    sortedConversations.forEach(conversation => {
-      const updatedAt = new Date(conversation.updatedAt)
-      updatedAt.setHours(0, 0, 0, 0)
-      
-      if (updatedAt.getTime() === today.getTime()) {
-        todayGroup.push(conversation)
-      } else if (updatedAt.getTime() === yesterday.getTime()) {
-        yesterdayGroup.push(conversation)
-      } else if (updatedAt.getTime() >= oneWeekAgo.getTime()) {
-        thisWeekGroup.push(conversation)
+    filteredConversations.forEach(conversation => {
+      const convDate = new Date(conversation.updatedAt);
+      if (convDate >= todayDate) {
+        today.push(conversation);
+      } else if (convDate >= yesterdayDate) {
+        yesterday.push(conversation);
+      } else if (convDate >= thisWeekDate) {
+        thisWeek.push(conversation);
+      } else if (convDate >= thisMonthDate) {
+        thisMonth.push(conversation);
       } else {
-        olderGroup.push(conversation)
+        older.push(conversation);
       }
-    })
+    });
     
-    // Create the groups array
-    const result: ConversationGroup[] = [];
+    const groups: ConversationGroup[] = [];
     
-    if (todayGroup.length > 0) {
-      result.push({ title: "Today", items: todayGroup });
+    if (today.length > 0) {
+      groups.push({ title: 'Today', items: today.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()) });
     }
     
-    if (yesterdayGroup.length > 0) {
-      result.push({ title: "Yesterday", items: yesterdayGroup });
+    if (yesterday.length > 0) {
+      groups.push({ title: 'Yesterday', items: yesterday.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()) });
     }
     
-    if (thisWeekGroup.length > 0) {
-      result.push({ title: "This Week", items: thisWeekGroup });
+    if (thisWeek.length > 0) {
+      groups.push({ title: 'This Week', items: thisWeek.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()) });
     }
     
-    if (olderGroup.length > 0) {
-      result.push({ title: "Older", items: olderGroup });
+    if (thisMonth.length > 0) {
+      groups.push({ title: 'This Month', items: thisMonth.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()) });
     }
     
-    return result;
-  }, [conversations])
+    if (older.length > 0) {
+      groups.push({ title: 'Older', items: older.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()) });
+    }
+    
+    return groups;
+  }, [conversations, searchQuery]);
   
   // Get the first message content preview (or use the title as fallback)
   const getConversationPreview = (conversation: Conversation) => {
@@ -107,13 +121,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar {...props}>
       <SidebarHeader className="flex flex-col gap-4">
         <SidebarLogo />
-        <SearchForm />
+        <SearchForm
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+        />
       </SidebarHeader>
       <SidebarContent>
         {/* Show message if no conversations */}
         {groupedConversations.length === 0 && (
           <div className="px-3 py-2 text-sm text-muted-foreground">
-            No conversations yet. Start a new chat to begin.
+            {searchQuery.trim() !== "" 
+              ? "No conversations found for your search. Try a different term."
+              : "No conversations yet. Start a new chat to begin."}
           </div>
         )}
         
