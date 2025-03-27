@@ -96,7 +96,7 @@ export const sendChatMessage = (
   setIsLoading(true);
   try {
     const requestId = websocketService.sendChatMessage(messages);
-    return { success: true, requestId };
+    return { success: true, requestId: requestId || "" };
   } catch (error) {
     console.error("Failed to send message:", error);
     setIsLoading(false);

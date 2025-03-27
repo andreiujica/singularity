@@ -17,15 +17,18 @@ export default function Page() {
   const { conversations, currentConversationId, createConversation } = useChatContext();
   const chatAreaRef = useRef<ChatAreaHandle>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const hasCreatedInitialConversation = useRef(false);
   
   // Get current conversation messages
   const currentConversation = currentConversationId 
     ? conversations.find(c => c.id === currentConversationId) 
     : null;
   
-  // Ensure we have a conversation
+  // Ensure we have a conversation - using ref to prevent double creation
   useEffect(() => {
-    if (!currentConversationId && conversations.length === 0) {
+    // Only create a conversation if we don't have one and haven't created one yet
+    if (!currentConversationId && conversations.length === 0 && !hasCreatedInitialConversation.current) {
+      hasCreatedInitialConversation.current = true;
       createConversation("New Chat");
     }
   }, [currentConversationId, conversations.length, createConversation]);
