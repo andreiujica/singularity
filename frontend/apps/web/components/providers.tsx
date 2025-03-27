@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
-import { ChatProvider } from "@/hooks/useChatContext"
+import { ChatProvider } from "@/providers/ChatProvider"
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
