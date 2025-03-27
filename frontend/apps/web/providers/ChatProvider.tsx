@@ -137,7 +137,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     // Send message through WebSocket
     const result = sendChatMessage(conversation, userMessage, setIsLoading);
     
-    if (result.success) {
+    if (result.success && result.requestId) {
       activeRequestId.current = result.requestId;
     } else {
       // Add error message to conversation
@@ -148,13 +148,6 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       );
     }
   }, [currentConversationId, getCurrentConversation, isLoading, isConnected]);
-
-  // Initialize with a conversation if empty
-  useEffect(() => {
-    if (conversations.length === 0) {
-      createConversation();
-    }
-  }, [conversations.length, createConversation]);
 
   return (
     <ChatContext.Provider 
