@@ -26,8 +26,14 @@ type ConversationGroup = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { conversations, currentConversationId, switchConversation } = useChatContext()
+  const { conversations, currentConversationId, switchConversation, isLoading } = useChatContext()
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Handler for switching conversations that checks loading state
+  const handleSwitchConversation = (conversationId: string) => {
+    if (isLoading) return; // Don't allow switching during loading
+    switchConversation(conversationId);
+  };
 
   // Group conversations by date
   const groupedConversations = useMemo(() => {
@@ -124,6 +130,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SearchForm
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          disabled={isLoading}
         />
       </SidebarHeader>
       <SidebarContent>
@@ -146,7 +153,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <SidebarMenuItem key={conversation.id}>
                     <SidebarMenuButton 
                       isActive={conversation.id === currentConversationId}
-                      onClick={() => switchConversation(conversation.id)}
+                      onClick={() => handleSwitchConversation(conversation.id)}
+                      disabled={isLoading}
+                      className={isLoading && conversation.id !== currentConversationId ? "opacity-50 cursor-not-allowed" : ""}
                     >
                       {getConversationPreview(conversation)}
                     </SidebarMenuButton>
