@@ -106,11 +106,14 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
   // Switch to a different conversation
   const switchConversation = useCallback((conversationId: string) => {
+    // Prevent switching if we're currently loading a response
+    if (isLoading) return;
+    
     const conversation = conversations.find(c => c.id === conversationId);
     if (conversation) {
       setCurrentConversationId(conversationId);
     }
-  }, [conversations]);
+  }, [conversations, isLoading]);
 
   // Send a new message
   const sendMessage = useCallback((content: string) => {
