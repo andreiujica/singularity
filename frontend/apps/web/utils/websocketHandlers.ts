@@ -48,6 +48,27 @@ export const createMessageHandler = (
         // Mark request as complete
         activeRequestId.current = null;
         setIsLoading(false);
+        
+        // If we have metrics and an assistant message, attach metrics to the message
+        if (data.metrics && messages.length > 0) {
+          const lastMessage = messages[messages.length - 1];
+          
+          if (lastMessage && lastMessage.role === 'assistant') {
+            // Add metrics to the message
+            messages[messages.length - 1] = {
+              ...lastMessage,
+              metrics: data.metrics
+            };
+            
+            // Update the conversation with the metrics
+            updatedConversations[conversationIndex] = {
+              ...conversation,
+              messages,
+              updatedAt: new Date()
+            };
+          }
+        }
+        
         return updatedConversations;
       }
       
