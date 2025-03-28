@@ -7,6 +7,10 @@ export interface Message {
   role: "system" | "user" | "assistant";
   conversationId: string;
   createdAt: Date;
+  metrics?: {
+    responseTime?: number;
+    length?: number;
+  };
 }
 
 // Conversation type

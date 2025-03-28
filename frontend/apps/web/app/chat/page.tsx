@@ -69,6 +69,7 @@ export default function Page() {
                     key={message.id} 
                     content={message.content} 
                     isUser={message.role === 'user'} 
+                    metrics={message.role === 'assistant' ? message.metrics : undefined}
                   />
                 ))}
                 <div ref={messagesEndRef} />

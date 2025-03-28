@@ -24,6 +24,7 @@ class StreamChunk(BaseModel):
     request_id: str
     content: str
     finished: bool
+    metrics: Optional[dict] = None
 
 
 class ErrorResponse(BaseModel):

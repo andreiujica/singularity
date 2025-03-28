@@ -1,4 +1,5 @@
 import json
+import time
 from typing import Any, Dict, Optional
 
 from fastapi import WebSocket
@@ -25,14 +26,16 @@ class WebSocketHandler:
         websocket: WebSocket, 
         request_id: str, 
         content: str, 
-        finished: bool
+        finished: bool,
+        metrics: Optional[dict] = None
     ) -> None:
         """Send a chunk of the response to the WebSocket client."""
         await websocket.send_json(
             StreamChunk(
                 request_id=str(request_id),
                 content=content,
-                finished=finished
+                finished=finished,
+                metrics=metrics
             ).model_dump()
         )
 
@@ -63,6 +66,9 @@ class WebSocketHandler:
     ) -> Optional[str]:
         """Process chat completion request and handle streaming response."""
         try:
+            # Start timing
+            start_time = time.time()
+            
             # Convert our message models to the format OpenAI expects
             messages = [{"role": msg.role, "content": msg.content} for msg in chat_request.messages]
             
@@ -90,16 +96,26 @@ class WebSocketHandler:
                         False
                     )
             
-            # Send a final message to indicate completion
+            # Calculate metrics
+            response_time = int((time.time() - start_time) * 1000)  # Convert to milliseconds
+            content_length = len(collected_content)
+            
+            metrics = {
+                "responseTime": response_time,
+                "length": content_length
+            }
+            
+            # Send a final message to indicate completion with metrics
             await self.send_chunk(
                 websocket,
                 chat_request.request_id,
                 "",
-                True
+                True,
+                metrics
             )
             
             # Log completion
-            logger.info(f"Completed streaming response for request {chat_request.request_id}")
+            logger.info(f"Completed streaming response for request {chat_request.request_id} in {response_time}ms with {content_length} chars")
             return collected_content
             
         except Exception as e:

@@ -9,9 +9,13 @@ interface ChatBubbleProps {
   content: string
   isUser?: boolean
   className?: string
+  metrics?: {
+    responseTime?: number
+    length?: number
+  }
 }
 
-export function ChatBubble({ content, isUser = true, className }: ChatBubbleProps) {
+export function ChatBubble({ content, isUser = true, className, metrics }: ChatBubbleProps) {
   // Convert double line breaks to special marker for better paragraph detection
   const processedContent = !isUser ? content.replace(/\n\n+/g, '\n\n&nbsp;\n\n') : content;
   
@@ -44,6 +48,26 @@ export function ChatBubble({ content, isUser = true, className }: ChatBubbleProp
             )}
           >
             <div className="flex flex-col gap-0.5 sm:gap-1">
+              {metrics && (
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 px-1 sm:px-2 text-xs text-zinc-500 dark:text-zinc-400 mb-1">
+                  {metrics.responseTime !== undefined && (
+                    <div className="flex items-center gap-1 min-w-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 flex-shrink-0">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5.25l3.28 3.28a.75.75 0 101.06-1.06l-3.59-3.59V5z" clipRule="evenodd" />
+                      </svg>
+                      <span className="truncate">{metrics.responseTime}ms</span>
+                    </div>
+                  )}
+                  {metrics.length !== undefined && (
+                    <div className="flex items-center gap-1 min-w-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 flex-shrink-0">
+                        <path d="M7 8a3 3 0 100-6 3 3 0 000 6zM14.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5zM1.615 16.428a1.224 1.224 0 01-.569-1.175 6.002 6.002 0 0111.908 0c.058.467-.172.92-.57 1.174A9.953 9.953 0 017 18a9.953 9.953 0 01-5.385-1.572zM14.5 16h-.106c.07-.297.088-.611.048-.933a7.47 7.47 0 00-1.588-3.755 4.502 4.502 0 015.874 2.636.818.818 0 01-.36.98A7.465 7.465 0 0114.5 16z" />
+                      </svg>
+                      <span className="truncate">{metrics.length} chars</span>
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="relative w-full">
                 <div className="w-full text-base md:text-sm px-1 sm:px-2 py-0.5 sm:py-1 prose prose-sm dark:prose-invert max-w-none prose-p:mb-1 prose-p:mt-0 prose-p:leading-relaxed prose-li:my-0.5 prose-headings:mb-2 prose-headings:mt-3 prose-pre:my-2 prose-pre:bg-gray-100 dark:prose-pre:bg-gray-900 prose-pre:p-2 prose-pre:rounded-md">
                   <ReactMarkdown 
