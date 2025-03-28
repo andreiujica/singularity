@@ -2,6 +2,8 @@
 
 import * as React from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
+import { useContext } from "react"
+import { ChatContext } from "@/contexts/ChatContext"
 
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -42,8 +44,11 @@ const models: Model[] = [
 ]
 
 export function ModelSelector() {
-  const [selectedModel, setSelectedModel] = React.useState<Model>(models[0]!)
+  const { selectedModel, setSelectedModel } = useContext(ChatContext)
   const [open, setOpen] = React.useState(false)
+  
+  // Find the selected model in our models array
+  const currentModel = models.find(model => model.id === selectedModel) || models[0]!
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -57,13 +62,13 @@ export function ModelSelector() {
                 aria-expanded={open}
                 className="flex items-center justify-between gap-2 hover:text-lime-400"
               >
-                {selectedModel.name}
+                {currentModel.name}
                 <ChevronsUpDown className="h-4 w-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
           </TooltipTrigger>
           <TooltipContent align="start" className="w-80">
-            <p>{selectedModel.description}</p>
+            <p>{currentModel.description}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -72,7 +77,7 @@ export function ModelSelector() {
           <DropdownMenuItem
             key={model.id}
             onClick={() => {
-              setSelectedModel(model)
+              setSelectedModel(model.id)
               setOpen(false)
             }}
             className="flex items-center justify-between"
@@ -81,7 +86,7 @@ export function ModelSelector() {
               <span>{model.name}</span>
               <span className="text-xs text-muted-foreground">{model.description}</span>
             </div>
-            {selectedModel.id === model.id && <Check className="h-4 w-4 ml-2" />}
+            {currentModel.id === model.id && <Check className="h-4 w-4 ml-2" />}
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>

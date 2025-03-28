@@ -42,10 +42,24 @@ class OpenAIService:
         Returns:
             An async generator yielding completion chunks
         """
-        return await self.client.chat.completions.create(
-            model=model,
-            messages=messages,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            stream=stream,
-        ) 
+        # Common parameters for all models
+        params = {
+            "model": model,
+            "messages": messages,
+            "stream": stream,
+        }
+        
+        # o3-mini has different parameter requirements
+        if model == "o3-mini":
+            # o3-mini doesn't support temperature
+            # Uses max_completion_tokens instead of max_tokens
+            if max_tokens is not None:
+                params["max_completion_tokens"] = max_tokens
+            else:
+                params["max_completion_tokens"] = 4096  # Default value
+        else:
+            # For other models (like gpt-4o series)
+            params["temperature"] = temperature
+            params["max_tokens"] = max_tokens
+            
+        return await self.client.chat.completions.create(**params) 

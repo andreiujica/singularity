@@ -29,4 +29,6 @@ export interface ChatContextType {
   isConnected: boolean;
   connectionError: string | null;
   retryConnection: () => void;
+  selectedModel: string;
+  setSelectedModel: (model: string) => void;
 } 

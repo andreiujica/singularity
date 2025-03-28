@@ -81,7 +81,8 @@ export const addAssistantMessage = (
 export const sendChatMessage = (
   conversation: Conversation,
   userMessage: Message,
-  setIsLoading: Dispatch<SetStateAction<boolean>>
+  setIsLoading: Dispatch<SetStateAction<boolean>>,
+  model: string = "gpt-4o-mini"
 ): MessageSendResult => {
   // Prepare messages for WebSocket
   const messages = [
@@ -95,7 +96,7 @@ export const sendChatMessage = (
   // Send to WebSocket
   setIsLoading(true);
   try {
-    const requestId = websocketService.sendChatMessage(messages);
+    const requestId = websocketService.sendChatMessage(messages, model);
     return { success: true, requestId: requestId || "" };
   } catch (error) {
     console.error("Failed to send message:", error);

@@ -12,4 +12,6 @@ export const ChatContext = createContext<ChatContextType>({
   isConnected: false,
   connectionError: null,
   retryConnection: () => {},
+  selectedModel: "gpt-4o-mini",
+  setSelectedModel: () => {},
 }); 

@@ -23,6 +23,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isConnected, setIsConnected] = useState(websocketService.isConnected());
   const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [selectedModel, setSelectedModel] = useState<string>("gpt-4o-mini");
   const activeRequestId = useRef<string | null>(null);
   
   // Function to get current conversation
@@ -134,8 +135,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       return;
     }
     
-    // Send message through WebSocket
-    const result = sendChatMessage(conversation, userMessage, setIsLoading);
+    // Send message through WebSocket with selected model
+    const result = sendChatMessage(conversation, userMessage, setIsLoading, selectedModel);
     
     if (result.success && result.requestId) {
       activeRequestId.current = result.requestId;
@@ -147,7 +148,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         setConversations
       );
     }
-  }, [currentConversationId, getCurrentConversation, isLoading, isConnected]);
+  }, [currentConversationId, getCurrentConversation, isLoading, isConnected, selectedModel]);
 
   return (
     <ChatContext.Provider 
@@ -161,6 +162,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         isConnected,
         connectionError,
         retryConnection,
+        selectedModel,
+        setSelectedModel,
       }}
     >
       {children}
