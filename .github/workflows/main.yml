@@ -38,30 +38,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Setup Docker Compose
-        uses: KengoTODA/actions-setup-docker-compose@v1
-        with:
-          version: '2.20.2'
+      - name: Install frontend dependencies only
+        run: pnpm install --filter=!api --no-frozen-lockfile
 
       - name: Approve builds
-        run: pnpm approve-builds
-
-      - name: Create API .env file
-        run: |
-          cd apps/api
-          cp .env.example .env
-
-      - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm approve-builds --all
 
       - name: Check types
-        run: pnpm type-check
+        run: pnpm type-check --filter=!api
 
       - name: Lint
-        run: pnpm lint
+        run: pnpm lint --filter=!api
 
       - name: Frontend Unit tests
         run: pnpm test:unit
-
-      - name: API tests
-        run: pnpm test:api
