@@ -58,9 +58,9 @@ singularity/
    cd singularity
    ```
 
-2. **Install dependencies**
+2. **Install dependencies (no need to run `install` scripts)**
    ```bash
-   pnpm install
+   pnpm install --ignore-scripts
    ```
 
 3. **Set up environment variables**
