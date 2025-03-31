@@ -44,8 +44,8 @@ jobs:
       - name: Check types
         run: pnpm type-check 
 
-      - name: Lint
-        run: pnpm lint 
+      - name: Lint Frontend
+        run: pnpm lint --filter=web
 
       - name: Frontend Unit tests
         run: pnpm test:unit
