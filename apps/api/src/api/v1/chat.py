@@ -1,7 +1,7 @@
 """Chat API endpoints for WebSocket communication."""
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
 
-from src.handlers.websocket_handler import WebSocketHandler
+from src.handlers.websocket import WebSocketHandler
 from src.api.dependencies import get_websocket_handler
 from src.utils.app_resources import logger
 

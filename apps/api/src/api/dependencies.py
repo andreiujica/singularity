@@ -2,7 +2,7 @@
 from fastapi import Depends
 
 from src.adapters.openai import OpenAIAdapter
-from src.handlers.websocket_handler import WebSocketHandler
+from src.handlers.websocket import WebSocketHandler
 
 
 
