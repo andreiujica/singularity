@@ -16,7 +16,7 @@ import {
 } from "@/constants/websocket";
 import { createWebSocketMessage, calculateBackoff, isBrowser } from "@/utils/websocket";
 
-class WebSocketService {
+export class WebSocketService {
   private socket: WebSocket | null = null;
   private reconnectTimeout: NodeJS.Timeout | null = null;
   private reconnectAttempts = 0;
