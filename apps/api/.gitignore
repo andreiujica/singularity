@@ -37,3 +37,6 @@ temp/
 
 # Python
 __pycache__/
+
+# Coverage
+.coverage
