@@ -15,8 +15,8 @@ deps: ## compile dependencies.
 		echo "Use 'make start' to start the container"; \
 		exit 1; \
 	fi
-	python3 -m piptools compile --upgrade requirements/prod.in -o requirements.txt
-	python3 -m piptools compile --upgrade requirements/dev.in -o requirements.dev.txt
+	python3 -m piptools compile --upgrade requirements/prod.in -o requirements/requirements.txt
+	python3 -m piptools compile --upgrade requirements/dev.in -o requirements/requirements.dev.txt
 
 start:
 	@if [ -f /.dockerenv ]; then \

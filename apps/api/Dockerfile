@@ -15,14 +15,14 @@ WORKDIR /srv
 ENV PYTHONPATH="/srv"
 
 # Install dependencies used on dev (includes testing packages)
-COPY ./requirements.dev.txt .
-COPY ./requirements/PIP_VERSION .
+COPY ./requirements/requirements.dev.txt ./requirements/
+COPY ./requirements/PIP_VERSION ./requirements/
 
 RUN pip install pip-tools
 
 # Install dependencies
-RUN pip install --no-cache-dir --upgrade pip=="$(cat PIP_VERSION)" \
- && pip install --no-cache-dir -r requirements.dev.txt
+RUN pip install --no-cache-dir --upgrade pip=="$(cat requirements/PIP_VERSION)" \
+ && pip install --no-cache-dir -r requirements/requirements.dev.txt
 
 RUN apt-get update && apt-get install make
 
