@@ -1,10 +1,15 @@
 {
-  "name": "shadcn-ui-monorepo",
+  "name": "singularity",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:web": "turbo dev --filter=web",
+    "dev:api": "turbo dev --filter=api",
+    "dev:all": "turbo dev --filter=web --filter=api",
+    "api:start": "cd apps/api && make start",
+    "api:stop": "cd apps/api && make stop",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },

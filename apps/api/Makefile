@@ -1,5 +1,5 @@
 # MAKEFILE
-CONTAINER_NAME?=fastapi-interview
+CONTAINER_NAME?=singularity-api
 
 # The .PHONY rule is used to declare that 'test' and 'tests' are not files but rather commands.
 # This prevents Make from checking for the existence of a file named 'test' or 'tests' and
@@ -25,6 +25,9 @@ start:
 		docker-compose -f docker-compose.dev.yaml up -d --build; \
 		docker exec -it $(CONTAINER_NAME) bash; \
 	fi
+
+start-detached:
+	docker-compose -f docker-compose.dev.yaml up -d --build
 
 stop:
 	docker-compose -f docker-compose.dev.yaml down

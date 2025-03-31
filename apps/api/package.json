@@ -1,0 +1,15 @@
+{
+    "name": "api",
+    "description": "The API that powers the Singularity platform. Built on FastAPI.",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+      "dev": "make start-detached && docker exec -it singularity-api make app",
+      "build": "make build",
+      "install": "make start-detached && docker exec -it singularity-api make deps",
+      "start": "make start",
+      "stop": "make stop",
+      "test": "make start-detached && docker exec -it singularity-api make tests"
+    },
+    "author": "Andrei Ujica <andrei.uji22@gmail.com>"
+  } 

@@ -1,0 +1,52 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+.pnpm-debug.log
+
+# Build artifacts
+.next/
+out/
+dist/
+build/
+*.tsbuildinfo
+
+# Next
+next-env.d.ts
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Test coverage
+coverage/
+
+# Temporary files
+tmp/
+temp/
+
+# Vercel
+.vercel
+
+# PWA files
+public/sw.js
+public/workbox-*.js
+public/worker-*.js
+public/sw.js.map
+public/workbox-*.js.map
+public/worker-*.js.map 
