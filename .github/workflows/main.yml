@@ -38,14 +38,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Install frontend dependencies only
-        run: pnpm install --filter=!api --no-frozen-lockfile
+      - name: Install all dependencies
+        run: pnpm install --ignore-scripts
 
       - name: Check types
-        run: pnpm type-check --filter=!api
+        run: pnpm type-check 
 
       - name: Lint
-        run: pnpm lint --filter=!api
+        run: pnpm lint 
 
       - name: Frontend Unit tests
         run: pnpm test:unit
