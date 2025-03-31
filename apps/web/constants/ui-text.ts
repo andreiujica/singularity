@@ -3,7 +3,7 @@ export const welcomeScreen = {
   subtitle: "Your AI assistant for creative writing, coding help, and more. Choose a suggestion or type your own message to get started."
 }
 
-export const modelSelector = {
-  tooltipTitle: "AI Model",
-  tooltipDescription: "Select the AI model to use for generating responses."
+export const sidebar = {
+  emptySearch: "No conversations found for your search. Try a different term.",
+  emptyConversations: "No conversations yet. Start a new chat to begin."
 } 
