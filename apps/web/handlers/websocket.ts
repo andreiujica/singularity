@@ -13,7 +13,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { Conversation, Message } from "@/types/chat";
 import { SetStateAction, Dispatch } from "react";
-import { websocketService } from "@/lib/websocketService";
+import { websocketService } from "@/lib/websocket-service";
 
 /**
  * Creates a WebSocket open event handler

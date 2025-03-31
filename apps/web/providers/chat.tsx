@@ -2,7 +2,7 @@
 
 import React, { useState, useCallback, useRef, useEffect, useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { websocketService } from "@/lib/websocketService";
+import { websocketService } from "@/lib/websocket-service";
 import { ChatContext } from "@/contexts/chat";
 import { Conversation } from "@/types/chat";
 import { 

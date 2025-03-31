@@ -13,7 +13,7 @@ import {
   Message, 
   MessageSendResult 
 } from "@/types/chat";
-import { websocketService } from "@/lib/websocketService";
+import { websocketService } from "@/lib/websocket-service";
 import { Dispatch, SetStateAction } from "react";
 
 /**
