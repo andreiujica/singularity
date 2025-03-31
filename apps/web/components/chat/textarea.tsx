@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, forwardRef, useImperativeHandle } from "react"
-import { useChatContext } from "@/hooks/useChatContext"
+import { useChatContext } from "@/providers/chat"
 import { ConnectionError } from "@/components/chat/connection-error"
 import { TextareaInput } from "@/components/chat/textarea-input"
 import { ActionButtons } from "@/components/chat/action-buttons"

@@ -1,7 +1,7 @@
 "use client"
 
 import { Plus } from "lucide-react"
-import { useChatContext } from "@/hooks/useChatContext"
+import { useChatContext } from "@/providers/chat"
 import { Button } from "@workspace/ui/components/button"
 import {
   Tooltip,

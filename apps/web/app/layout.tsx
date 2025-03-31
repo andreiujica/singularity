@@ -1,6 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
-import { ChatProvider } from "@/providers/ChatProvider"
+import { ChatProvider } from "@/providers/chat"
 
 import "@workspace/ui/globals.css"
 

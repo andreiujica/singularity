@@ -4,6 +4,19 @@ import { SetStateAction, Dispatch } from "react";
 import { websocketService } from "@/lib/websocketService";
 
 /**
+ * Creates a WebSocket open event handler
+ */
+export const createOpenHandler = (
+  setIsConnected: Dispatch<SetStateAction<boolean>>,
+  setConnectionError: Dispatch<SetStateAction<string | null>>
+) => {
+  return () => {
+    setIsConnected(true);
+    setConnectionError(null);
+  };
+};
+
+/**
  * Creates a WebSocket message event handler
  */
 export const createMessageHandler = (

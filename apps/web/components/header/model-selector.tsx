@@ -3,7 +3,7 @@
 import * as React from "react"
 import { ChevronsUpDown } from "lucide-react"
 import { useContext } from "react"
-import { ChatContext } from "@/contexts/ChatContext"
+import { ChatContext } from "@/contexts/chat"
 import { availableModels } from "@/constants/models"
 import { ModelItem } from "./model-item"
 

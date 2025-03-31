@@ -1,20 +1,30 @@
 "use client";
 
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import React, { useState, useCallback, useRef, useEffect, useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { websocketService } from "@/lib/websocketService";
-import { ChatContext } from "@/contexts/ChatContext";
-import { Conversation, Message } from "@/types/chat";
+import { ChatContext } from "@/contexts/chat";
+import { Conversation } from "@/types/chat";
 import { 
   createMessageHandler, 
   createErrorHandler, 
-  createCloseHandler 
+  createCloseHandler,
+  createOpenHandler
 } from "@/utils/websocketHandlers";
 import {
   addUserMessage,
   addAssistantMessage,
   sendChatMessage
 } from "@/utils/conversations/messageHandlers";
+
+// Custom hook to use the chat context
+export function useChatContext() {
+  const context = useContext(ChatContext);
+  if (!context) {
+    throw new Error('useChatContext must be used within a ChatProvider');
+  }
+  return context;
+}
 
 // Chat Provider component
 export function ChatProvider({ children }: { children: React.ReactNode }) {
@@ -31,59 +41,6 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     if (!currentConversationId) return null;
     return conversations.find(c => c.id === currentConversationId) || null;
   }, [conversations, currentConversationId]);
-
-  // Set up WebSocket event handlers
-  useEffect(() => {
-    // Initialize connection
-    websocketService.connect();
-    
-    // Create handlers using our utility functions
-    const messageHandler = createMessageHandler(
-      currentConversationId, 
-      activeRequestId,
-      setConversations,
-      setIsLoading
-    );
-    
-    const errorHandler = createErrorHandler(
-      setConnectionError,
-      setIsLoading
-    );
-    
-    const closeHandler = createCloseHandler(
-      isLoading,
-      activeRequestId,
-      currentConversationId,
-      setIsConnected,
-      setIsLoading,
-      setConversations
-    );
-    
-    // Register handlers
-    const removeMessageListener = websocketService.onMessage(messageHandler);
-    const removeErrorListener = websocketService.onError(errorHandler);
-    
-    const removeOpenListener = websocketService.onOpen(() => {
-      setIsConnected(true);
-      setConnectionError(null);
-    });
-    
-    const removeCloseListener = websocketService.onClose(closeHandler);
-    
-    // Clean up event listeners on unmount
-    return () => {
-      removeMessageListener();
-      removeErrorListener();
-      removeOpenListener();
-      removeCloseListener();
-    };
-  }, [currentConversationId, isLoading]);
-
-  // Retry connection function exposed through context
-  const retryConnection = useCallback(() => {
-    setConnectionError(null);
-    websocketService.resetConnection();
-  }, []);
 
   // Create a new conversation
   const createConversation = useCallback((title?: string) => {
@@ -152,6 +109,59 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       );
     }
   }, [currentConversationId, getCurrentConversation, isLoading, isConnected, selectedModel]);
+  
+  // Retry connection function exposed through context
+  const retryConnection = useCallback(() => {
+    setConnectionError(null);
+    websocketService.resetConnection();
+  }, []);
+
+  // Set up WebSocket event handlers
+  useEffect(() => {
+    // Initialize connection
+    websocketService.connect();
+    
+    // Create handlers using our utility functions
+    const messageHandler = createMessageHandler(
+      currentConversationId, 
+      activeRequestId,
+      setConversations,
+      setIsLoading
+    );
+    
+    const errorHandler = createErrorHandler(
+      setConnectionError,
+      setIsLoading
+    );
+    
+    const closeHandler = createCloseHandler(
+      isLoading,
+      activeRequestId,
+      currentConversationId,
+      setIsConnected,
+      setIsLoading,
+      setConversations
+    );
+    
+    const openHandler = createOpenHandler(
+      setIsConnected,
+      setConnectionError
+    );
+    
+    // Register handlers
+    const removeMessageListener = websocketService.onMessage(messageHandler);
+    const removeErrorListener = websocketService.onError(errorHandler);
+    const removeOpenListener = websocketService.onOpen(openHandler);
+    const removeCloseListener = websocketService.onClose(closeHandler);
+    
+    // Clean up event listeners on unmount
+    return () => {
+      removeMessageListener();
+      removeErrorListener();
+      removeOpenListener();
+      removeCloseListener();
+    };
+  }, [currentConversationId, isLoading]);
 
   return (
     <ChatContext.Provider 

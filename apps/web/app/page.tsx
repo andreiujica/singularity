@@ -11,7 +11,7 @@ import {
 } from "@workspace/ui/components/sidebar"
 import { ChatBubble } from "@/components/chat/bubble"
 import { WelcomeScreen } from "@/components/chat/welcome"
-import { useChatContext } from "@/hooks/useChatContext"
+import { useChatContext } from "@/providers/chat"
 
 export default function Page() {
   const { conversations, currentConversationId, createConversation } = useChatContext();

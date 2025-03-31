@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useState } from "react"
-import { useChatContext } from "@/hooks/useChatContext"
+import { useChatContext } from "@/providers/chat"
 import { useConversationGroups } from "@/hooks/use-conversation-groups"
 import { SearchForm } from "@/components/sidebar/search-form"
 import { ConversationGroupComponent } from "@/components/sidebar/conversation-group"
