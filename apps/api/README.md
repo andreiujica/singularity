@@ -1,79 +1,177 @@
-# fastapi-template
+# Singularity API
 
-A template project for building applications using FastAPI with Docker. This setup provides a streamlined development environment and easy dependency management.
+A FastAPI-based backend service for the Singularity application. This API provides endpoints for chat functionality and websocket communication.
 
+## Architecture
 
-## Quickstart
-1. **Build Docker image**: Run `make build` to create the Docker images for the FastAPI application and any supplementary services.
-2. **Compile dependencies**: Run `make deps` to generate `requirements.txt` and `requirements.dev.txt` using piptools.
-3. **Set up .env**: Create .env file
-3. **Start containers and enter bash session**: Run `make start` to start the service containers and open an interactive bash shell in the main application container.
-4. **Run app**: Run `make app` inside the container.
-
-## Building the Service Containers
-Running `make build` executes `docker-compose -f docker-compose.dev.yaml build`. This command builds a Docker image from `Dockerfile` for the FastAPI application and Docker images for other necessary services as specified in `docker-compose.dev.yaml`. The Dockerfile includes steps to:
-- Create a user named `convergence_user`
-- Install Python dependencies
-- Update and install system packages
-- Expose port 8081
-- Start the FastAPI application on port 8081
-
-## Compiling Dependencies
-`piptools` helps manage dependencies by creating a `requirements.txt` file with all necessary packages and their compatible versions. Running `make deps` inside the container generates:
-- `requirements.txt`: Contains packages required for running the application in production.
-- `requirements.dev.txt`: Includes all packages from `requirements.txt` plus additional packages needed for development (e.g., testing tools).
-
-## Starting the Service
-Running `make start` executes the following commands:
-- `docker-compose -f docker-compose.dev.yaml up -d`: Starts all the service containers in detached mode.
-- `docker exec -it browser_agent bash`: Opens an interactive bash shell inside the `browser_agent` container for direct interaction.
-
-This setup allows you to run and interact with the application in a development environment.
-
-
-## Running tests
-Our testing strategy prioritises integration tests to ensure robust API interactions, while maintaining the ability to run some unit tests if required. To run tests, use the `make tests` command inside the Docker container. This loads the environment from `tests/test.env`, executes tests in both `tests/unit` and `tests/integration` directories, and generates a coverage report. New tests can be added to the appropriate directory under `tests/`.
-
-## Adding Resources
-Resources in this project are managed using a custom utility system. Here's how it works:
-
-Define resources by inheriting from `src.utils.util_manager.Util`:
-```python
-from abc import ABC, abstractmethod
-
-class Util(ABC):
-    @abstractmethod
-    async def init(self):
-        # Initialise and return the resource
-        ...
-
-    @abstractmethod
-    async def cleanup(self, resource):
-        # Clean up the resource (returned by self.init())
-        ...
+```
+├── src/
+│   ├── api/               # API route definitions
+│   │   ├── v1/            # API version 1 endpoints
+│   │   │   └── chat.py    # Chat endpoints
+│   │   └── health.py      # Health check endpoint
+│   ├── models/            # Pydantic data models
+│   │   └── chat.py        # Chat-related models
+│   ├── handlers/          # Business logic handlers
+│   │   └── websocket.py   # WebSocket handler logic
+│   ├── adapters/          # External service adapters
+│   ├── utils/             # Utility functions and classes
+│   ├── main.py            # Application entry point
+│   └── settings.py        # Application configuration
+├── tests/
+│   ├── integration/       # Integration tests
+│   └── unit/              # Unit tests
+└── requirements/          # Dependency management
+    ├── prod.in            # Production dependencies
+    └── dev.in             # Development dependencies
 ```
 
-Resources are initalised at application startup and cleaned up at shutdown using FastAPI's [lifespan events](https://fastapi.tiangolo.com/advanced/events/).
-Add resources to the UtilManager for type hinting and easy access:
+### Architecture Flow
 
-```python
-class Resources(UtilManager):
-    @property
-    def database(self) -> sqlite3.Connection:
-        return self.initialised_resources.get(SQLite)
-
-resources = Resources([SQLite])
+```
+Client Request → FastAPI Router → API Endpoint → Handler → Response
+                                                  ↓
+                            External Services ← Adapters
 ```
 
-Use resources in your application:
+1. **Request Handling**: FastAPI receives HTTP/WebSocket requests and routes them to appropriate endpoints
+2. **Data Validation**: Pydantic models validate incoming data
+3. **Business Logic**: Handlers process the requests and implement business logic
+4. **External Services**: Adapters interface with external services as needed
+5. **Response**: Data is returned to the client
 
-```python
-from src.utils.utils import resources
+## Getting Started
 
-resources.database.cursor()
+### Prerequisites
+
+- Docker and Docker Compose
+- Make
+
+### Setup and Running
+
+1. **Clone the repository**
+
+2. **Environment variables**
+   Copy the example env file and update as needed:
+   ```
+   cp .env.example .env
+   ```
+
+3. **Build Docker image**
+   ```
+   make build
+   ```
+
+4. **Compile dependencies** (inside container)
+   ```
+   make start
+   make deps
+   ```
+
+5. **Start the application** (inside container)
+   ```
+   make app
+   ```
+
+The API will be available at `http://localhost:8081`.
+
+## Testing
+
+Our testing approach prioritizes integration tests to ensure robust API interactions, with unit tests for specific components.
+
+### Running Tests
+
+Inside the Docker container:
 ```
-This system allows for organised resource management and provides auto-completion via type hints throughout the application.
+make tests
+```
 
+This will:
+- Run both unit and integration tests
+- Generate a coverage report
 
-## Local Development
-Docker Compose binds the volume of the container to the local volume. This setup allows you to make changes to the source code on your local machine, which are automatically reflected in the container without needing to rebuild it. Rebuilding the container is only necessary when adding or updating dependencies. Adding environment variables to `.env` requires restarting the container.
+### Test Structure
+
+- **Integration Tests**: Located in `tests/integration/`, test entire API flows
+- **Unit Tests**: Located in `tests/unit/`, test individual components
+
+## Contributing
+
+### Setting Up Development Environment
+
+1. **Start the container in development mode**
+   ```
+   make start
+   ```
+
+2. **Make code changes**
+   Docker Compose binds the container volume to your local directory, so changes are reflected immediately.
+
+3. **Run the application with hot reload**
+   ```
+   make app
+   ```
+
+### Adding New Dependencies
+
+1. Add the package to either `requirements/prod.in` or `requirements/dev.in`
+2. Compile dependencies (inside container)
+   ```
+   make deps
+   ```
+
+### Code Style
+
+- Follow PEP 8 guidelines
+- Use type hints
+- Write meaningful docstrings
+
+### Testing Guidelines
+
+- Write integration tests for new API endpoints
+- Add unit tests for complex business logic
+- Maintain or improve code coverage
+
+## Package.json in a Python Application
+
+Despite being a Python application, this project includes a `package.json` file. This is intentional and serves several purposes:
+
+1. **Monorepo Integration**: This API is part of a larger monorepo structure, and having a package.json file allows it to be recognized and managed by JavaScript-based monorepo tools like Turborepo.
+
+2. **Consistent Developer Experience**: By including npm scripts that wrap Make commands, we provide a consistent interface across all projects in the monorepo, regardless of the underlying technology.
+
+3. **Simplified Commands**: The package.json scripts act as aliases to more complex Docker and Make commands, making it easier for developers to remember and use:
+   - `pnpm dev` - Start the development server with hot reload
+   - `pnpm build` - Build the Docker image
+   - `pnpm install` - Install dependencies
+   - `pnpm test` - Run tests
+   - `pnpm start` - Start the container with an interactive shell
+   - `pnpm stop` - Stop the container
+
+This setup allows both Python developers and those more familiar with JavaScript/pnpm to work comfortably with the codebase.
+
+## FAQ
+
+### How do I add a new API endpoint?
+
+Create a new route function in the appropriate router file in `src/api/`, define request/response models in `src/models/`, and implement business logic in `src/handlers/`.
+
+### How do I connect to external services?
+
+Create an adapter in `src/adapters/` that interfaces with the external service, then use it in your handlers.
+
+### How do I run only specific tests?
+
+Use pytest's filtering:
+```
+pytest tests/integration/test_specific_file.py::test_specific_function
+```
+
+### How do I debug the application?
+
+1. Add breakpoints with `breakpoint()`
+2. Run the app with `make app`
+
+### How do I update dependencies?
+
+Edit `requirements/prod.in` or `requirements/dev.in`, then run `make deps`.
