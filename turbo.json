@@ -21,6 +21,19 @@
       "cache": false,
       "persistent": true
     },
+    "test:unit": {
+      "dependsOn": ["^test:unit"]
+    },
+    "test:e2e": {
+      "dependsOn": ["^test:e2e"],
+      "passThroughEnv": ["PLAYWRIGHT_*"]
+    },
+    "test:api": {
+      "dependsOn": ["^test:api"]
+    },
+    "test": {
+      "dependsOn": ["test:unit", "test:e2e", "test:api"]
+    },
     "e2e": {
       "passThroughEnv": ["PLAYWRIGHT_*"]
     }
