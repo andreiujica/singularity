@@ -20,6 +20,9 @@
     "api#dev": {
       "cache": false,
       "persistent": true
+    },
+    "e2e": {
+      "passThroughEnv": ["PLAYWRIGHT_*"]
     }
   }
 }

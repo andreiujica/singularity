@@ -20,6 +20,7 @@ export function AssistantBubble({ content, className, metrics }: AssistantBubble
   
   return (
     <div 
+      data-testid="assistant-message"
       className={cn(
         "rounded-lg overflow-hidden p-1.5 sm:p-2 max-w-[90%] sm:max-w-[95%] md:max-w-full",
         className

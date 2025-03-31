@@ -45,6 +45,7 @@ export function ThemeToggle() {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
+            data-testid="theme-toggle"
             variant="ghost"
             size="icon"
             onClick={toggleTheme}

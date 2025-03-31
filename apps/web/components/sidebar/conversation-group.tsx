@@ -30,7 +30,7 @@ export function ConversationGroupComponent({
       <SidebarGroupContent>
         <SidebarMenu>
           {group.items.map((conversation) => (
-            <SidebarMenuItem key={conversation.id}>
+            <SidebarMenuItem key={conversation.id} data-testid="conversation-item">
               <SidebarMenuButton 
                 isActive={conversation.id === currentConversationId}
                 onClick={() => onSelectConversation(conversation.id)}

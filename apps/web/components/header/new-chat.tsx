@@ -26,6 +26,7 @@ export function NewChat() {
       <Tooltip>
         <TooltipTrigger asChild>
             <Button 
+              data-testid="new-chat-button"
               variant="ghost" 
               size="icon" 
               className={`size-7 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:text-lime-400'}`}

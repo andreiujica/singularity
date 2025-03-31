@@ -29,7 +29,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const groupedConversations = useConversationGroups(conversations, searchQuery)
 
   return (
-    <Sidebar {...props}>
+    <Sidebar data-testid="sidebar" {...props}>
       <SidebarHeader className="flex flex-col gap-4">
         <SidebarLogo />
         <SearchForm

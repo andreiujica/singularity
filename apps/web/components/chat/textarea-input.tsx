@@ -32,6 +32,7 @@ export function TextareaInput({
   return (
     <div className="relative w-full">
       <textarea
+        data-testid="chat-textarea"
         ref={textareaRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}

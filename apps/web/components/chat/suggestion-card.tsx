@@ -13,6 +13,7 @@ interface SuggestionCardProps {
 export function SuggestionCard({ title, description, icon, onClick }: SuggestionCardProps) {
   return (
     <Card 
+      data-testid="suggestion-button"
       className="cursor-pointer hover:border-lime-300 transition-colors h-full" 
       onClick={onClick}
     >
