@@ -1,7 +1,7 @@
 "use client"
 
 import { ReactNode } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card"
+import { Card, CardDescription, CardHeader, CardTitle } from "@workspace/ui/components/card"
 
 interface SuggestionCardProps {
   title: string

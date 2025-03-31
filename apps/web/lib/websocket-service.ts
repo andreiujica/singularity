@@ -1,9 +1,7 @@
 "use client";
 
-import { v4 as uuidv4 } from "uuid";
 import { 
   WebSocketMessage, 
-  WebSocketResponse, 
   MessageHandler, 
   ErrorHandler, 
   StateChangeHandler 
@@ -61,7 +59,7 @@ export class WebSocketService {
     if (this.socket) {
       try {
         this.socket.close();
-      } catch (e) {
+      } catch {
         // Ignore errors during close
       }
       this.socket = null;
@@ -96,7 +94,7 @@ export class WebSocketService {
       const data = JSON.parse(event.data);
       console.debug("WebSocket received:", data);
       this.dispatchEvent(WS_EVENT.MESSAGE, data);
-    } catch (error) {
+    } catch {
       this.dispatchEvent(WS_EVENT.ERROR, new Error("Failed to parse WebSocket message"));
     }
   }
@@ -180,7 +178,7 @@ export class WebSocketService {
     if (this.socket) {
       try {
         this.socket.close(1000, "Disconnect requested");
-      } catch (e) {
+      } catch {
         // Ignore errors during close
       }
       this.socket = null;
@@ -234,7 +232,7 @@ export class WebSocketService {
   /**
    * Dispatch a custom event
    */
-  private dispatchEvent(eventName: string, detail?: any): void {
+  private dispatchEvent(eventName: string, detail?: unknown): void {
     if (isBrowser()) {
       window.dispatchEvent(new CustomEvent(eventName, { detail }));
     }

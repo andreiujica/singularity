@@ -22,7 +22,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
           }
           return <p className="whitespace-pre-wrap mb-1">{children}</p>;
         },
-        code: ({className, children, ...props}: any) => {
+        code: ({className, children, ...props}: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>) => {
           const match = /language-(\w+)/.exec(className || '')
           const isInline = !match && !className
           
