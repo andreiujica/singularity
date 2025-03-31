@@ -39,7 +39,10 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Approve builds
+        run: pnpm approve-builds --all
 
       - name: Check types
         run: pnpm type-check
@@ -50,5 +53,10 @@ jobs:
       - name: Frontend Unit tests
         run: pnpm test:unit
 
-      - name: Backend Unit tests
+      - name: Setup Docker Compose
+        uses: KengoTODA/actions-setup-docker-compose@v1
+        with:
+          version: '2.20.2'
+
+      - name: API tests
         run: pnpm test:api
