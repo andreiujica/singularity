@@ -41,9 +41,6 @@ jobs:
       - name: Install frontend dependencies only
         run: pnpm install --filter=!api --no-frozen-lockfile
 
-      - name: Approve builds
-        run: pnpm approve-builds --all
-
       - name: Check types
         run: pnpm type-check --filter=!api
 
