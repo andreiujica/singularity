@@ -22,6 +22,13 @@ export interface Conversation {
   updatedAt: Date;
 }
 
+// Result type for message sending operations
+export interface MessageSendResult {
+  success: boolean;
+  requestId?: string;
+  error?: string;
+}
+
 // Chat context interface
 export interface ChatContextType {
   conversations: Conversation[];

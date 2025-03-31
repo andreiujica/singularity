@@ -10,14 +10,19 @@ import {
   createErrorHandler, 
   createCloseHandler,
   createOpenHandler
-} from "@/utils/websocketHandlers";
+} from "@/handlers/websocket";
 import {
   addUserMessage,
   addAssistantMessage,
   sendChatMessage
-} from "@/utils/conversations/messageHandlers";
+} from "@/handlers/message";
 
-// Custom hook to use the chat context
+/**
+ * Custom hook to use the chat context
+ * 
+ * This hook provides access to the chat context value and ensures
+ * it's only used within a ChatProvider component.
+ */
 export function useChatContext() {
   const context = useContext(ChatContext);
   if (!context) {
@@ -26,8 +31,14 @@ export function useChatContext() {
   return context;
 }
 
-// Chat Provider component
+/**
+ * Chat Provider component
+ * 
+ * Manages conversations, messages, and WebSocket communication.
+ * Provides chat functionality to the entire application.
+ */
 export function ChatProvider({ children }: { children: React.ReactNode }) {
+  // ===== State =====
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversationId, setCurrentConversationId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,13 +47,19 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const [selectedModel, setSelectedModel] = useState<string>("gpt-4o-mini");
   const activeRequestId = useRef<string | null>(null);
   
-  // Function to get current conversation
+  // ===== Conversation Management Methods =====
+  
+  /**
+   * Gets the current active conversation
+   */
   const getCurrentConversation = useCallback(() => {
     if (!currentConversationId) return null;
     return conversations.find(c => c.id === currentConversationId) || null;
   }, [conversations, currentConversationId]);
 
-  // Create a new conversation
+  /**
+   * Creates a new conversation
+   */
   const createConversation = useCallback((title?: string) => {
     const id = uuidv4();
     const now = new Date();
@@ -61,7 +78,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     return id;
   }, [conversations.length]);
 
-  // Switch to a different conversation
+  /**
+   * Switches to a different conversation
+   */
   const switchConversation = useCallback((conversationId: string) => {
     // Prevent switching if we're currently loading a response
     if (isLoading) return;
@@ -72,7 +91,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     }
   }, [conversations, isLoading]);
 
-  // Send a new message
+  /**
+   * Sends a new message in the current conversation
+   */
   const sendMessage = useCallback((content: string) => {
     if (!content.trim() || !currentConversationId || isLoading) return;
     
@@ -110,13 +131,19 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     }
   }, [currentConversationId, getCurrentConversation, isLoading, isConnected, selectedModel]);
   
-  // Retry connection function exposed through context
+  // ===== WebSocket Management =====
+  
+  /**
+   * Retries WebSocket connection after an error
+   */
   const retryConnection = useCallback(() => {
     setConnectionError(null);
     websocketService.resetConnection();
   }, []);
 
-  // Set up WebSocket event handlers
+  /**
+   * Sets up WebSocket event handlers
+   */
   useEffect(() => {
     // Initialize connection
     websocketService.connect();
@@ -163,6 +190,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     };
   }, [currentConversationId, isLoading]);
 
+  // ===== Render =====
   return (
     <ChatContext.Provider 
       value={{
