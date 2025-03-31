@@ -46,6 +46,11 @@ jobs:
       - name: Approve builds
         run: pnpm approve-builds
 
+      - name: Create API .env file
+        run: |
+          cd apps/api
+          cp .env.example .env
+
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
