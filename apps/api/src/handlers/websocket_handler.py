@@ -6,20 +6,20 @@ from fastapi import WebSocket
 from openai.types.chat import ChatCompletionChunk
 
 from src.models.chat import ChatCompletionRequest, ErrorResponse, StreamChunk
-from src.services.openai_service import OpenAIService
+from src.adapters.openai import OpenAIAdapter
 from src.utils.app_resources import logger
 
 
 class WebSocketHandler:
     """Handler for WebSocket operations related to chat completion."""
 
-    def __init__(self, openai_service: OpenAIService):
+    def __init__(self, openai_adapter: OpenAIAdapter):
         """Initialize the WebSocket handler with dependencies.
         
         Args:
-            openai_service: Service for interacting with the OpenAI API
+            openai_adapter: Adapter for interacting with the OpenAI API
         """
-        self.openai_service = openai_service
+        self.openai_adapter = openai_adapter
 
     async def send_chunk(
         self,
@@ -73,7 +73,7 @@ class WebSocketHandler:
             messages = [{"role": msg.role, "content": msg.content} for msg in chat_request.messages]
             
             # Get streaming response from OpenAI
-            stream = await self.openai_service.generate_chat_completion(
+            stream = await self.openai_adapter.generate_chat_completion(
                 messages=messages,
                 model=chat_request.model,
                 temperature=chat_request.temperature,

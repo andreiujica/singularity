@@ -1,28 +1,29 @@
 """Dependency injection for FastAPI."""
 from fastapi import Depends
 
+from src.adapters.openai import OpenAIAdapter
 from src.handlers.websocket_handler import WebSocketHandler
-from src.services.openai_service import OpenAIService
 
 
-def get_openai_service() -> OpenAIService:
-    """Provide OpenAI service instance.
+
+def get_open_ai_adapter() -> OpenAIAdapter:
+    """Provide OpenAI adapter instance.
     
     Returns:
-        An instance of the OpenAI service
+        An instance of the OpenAI adapter
     """
-    return OpenAIService()
+    return OpenAIAdapter()
 
 
 def get_websocket_handler(
-    openai_service: OpenAIService = Depends(get_openai_service)
+    openai_adapter: OpenAIAdapter = Depends(get_open_ai_adapter)
 ) -> WebSocketHandler:
     """Provide WebSocket handler instance with dependencies.
     
     Args:
-        openai_service: Service for interacting with OpenAI
+        openai_adapter: Adapter for interacting with OpenAI
         
     Returns:
         An instance of the WebSocket handler
     """
-    return WebSocketHandler(openai_service) 
+    return WebSocketHandler(openai_adapter) 
