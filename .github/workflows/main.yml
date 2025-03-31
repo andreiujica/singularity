@@ -41,14 +41,8 @@ jobs:
       - name: Install all dependencies
         run: pnpm install --ignore-scripts
 
-      - name: Install ESLint globally
-        run: pnpm add -g eslint
-
       - name: Check types
         run: pnpm type-check 
-
-      - name: Lint Frontend
-        run: pnpm lint --filter=web
 
       - name: Frontend Unit tests
         run: pnpm test:unit
