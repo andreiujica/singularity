@@ -44,7 +44,7 @@ jobs:
           version: '2.20.2'
 
       - name: Approve builds
-        run: pnpm approve-builds --all
+        run: pnpm approve-builds
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
