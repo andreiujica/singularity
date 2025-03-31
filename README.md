@@ -1,6 +1,6 @@
-# Singularity
+<img width="1710" alt="Screenshot 2025-03-31 at 21 41 16" src="https://github.com/user-attachments/assets/55649e89-f732-4148-8bb7-a3171cf3e532" />
 
-![Singularity](https://via.placeholder.com/800x400?text=Singularity)
+# Singularity
 
 Singularity is a modern AI chat platform featuring a responsive Next.js frontend and a robust FastAPI backend.
 
