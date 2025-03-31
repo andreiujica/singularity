@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 
@@ -8,19 +9,16 @@ interface MarkdownRendererProps {
 }
 
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
-  // Convert double line breaks to special marker for better paragraph detection
-  const processedContent = content.replace(/\n\n+/g, '\n\n&nbsp;\n\n');
-  
   return (
     <ReactMarkdown 
       remarkPlugins={[remarkGfm]}
       components={{
         p: ({children}) => {
-          // Check if this paragraph only contains our special marker
-          if (children === '&nbsp;') {
-            return <div className="h-2"></div>;
+          // Check if the paragraph is empty (just a line break)
+          if (!children || (typeof children === 'string' && children.trim() === '')) {
+            return <div className="h-4"></div>;
           }
-          return <p className="whitespace-pre-wrap mb-1">{children}</p>;
+          return <p className="whitespace-pre-wrap mb-4">{children}</p>;
         },
         code: ({className, children, ...props}: React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>) => {
           const match = /language-(\w+)/.exec(className || '')
@@ -77,7 +75,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
         th: ({children}) => <th className="px-4 py-2 text-left text-xs font-medium text-zinc-700 dark:text-zinc-300 border-r last:border-r-0 border-zinc-300 dark:border-zinc-700">{children}</th>,
         td: ({children}) => <td className="px-4 py-2 text-sm border-r last:border-r-0 border-zinc-300 dark:border-zinc-700">{children}</td>
       }}>
-      {processedContent}
+      {content}
     </ReactMarkdown>
   )
 } 
